@@ -1,0 +1,95 @@
+{
+  "name": "starlite-game-countdown-manager",
+  "productName": "Starlite Game Countdown Manager",
+  "version": "1.0.0",
+  "description": "Track your favorite upcoming game releases with beautiful countdowns, chat with other gamers, and never miss a launch date!",
+  "main": "main.js",
+  "homepage": "https://github.com/tubbymctubbzz/game-countdown-manager",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder",
+    "build-win": "electron-builder --win",
+    "build-portable": "electron-builder --win portable",
+    "build-all": "electron-builder --win --mac --linux",
+    "dist": "npm run build-win",
+    "pack": "electron-builder --dir",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "build": {
+    "appId": "com.starlite.game-countdown-manager",
+    "productName": "Starlite Game Countdown Manager",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "**/*",
+      "!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}",
+      "!**/node_modules/*/{test,__tests__,tests,powered-test,example,examples}",
+      "!**/node_modules/*.d.ts",
+      "!**/node_modules/.bin",
+      "!**/*.{iml,o,hprof,orig,pyc,pyo,rbc,swp,csproj,sln,xproj}",
+      "!.editorconfig",
+      "!**/._*",
+      "!**/{.DS_Store,.git,.hg,.svn,CVS,RCS,SCCS,.gitignore,.gitattributes}",
+      "!**/{__pycache__,thumbs.db,.flowconfig,.idea,.vs,.nyc_output}",
+      "!**/{appveyor.yml,.travis.yml,circle.yml}",
+      "!**/{npm-debug.log,yarn.lock,.yarn-integrity,.yarn-metadata.json}"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        },
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "starlite.ico",
+      "publisherName": "Starlite Team",
+      "verifyUpdateCodeSignature": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "deleteAppDataOnUninstall": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Starlite Game Countdown Manager",
+      "include": "installer.nsh"
+    },
+    "portable": {
+      "artifactName": "Starlite-Game-Countdown-Manager-Portable-${version}.exe"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "starlite.icns",
+      "category": "public.app-category.entertainment"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "icon": "starlite.png",
+      "category": "Game"
+    }
+  },
+  "author": {
+    "name": "Starlite Team",
+    "email": "contact@starlite.app"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^27.0.0",
+    "electron-builder": "^24.6.4"
+  },
+  "dependencies": {
+    "uuid": "^9.0.0",
+    "sqlite3": "^5.1.6",
+    "bcrypt": "^5.1.1",
+    "moment-timezone": "^0.5.43"
+  }
+}

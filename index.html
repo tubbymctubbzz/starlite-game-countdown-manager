@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Starlite Game Countdown Manager</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="app-icon">
+                    <img src="starlite.ico" alt="Starlite" width="50" height="50">
+                </div>
+                <div class="header-text">
+                    <h1>STARLITE GAME COUNTDOWN MANAGER</h1>
+                    <p>Track your most anticipated game releases</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <div class="user-info" id="userInfo" style="display: none;">
+                    <div class="profile-dropdown">
+                        <button class="profile-btn" id="profileBtn">
+                            <i class='bx bx-user-circle'></i>
+                            <span id="currentUsername"></span>
+                            <i class='bx bx-chevron-down'></i>
+                        </button>
+                        <div class="profile-menu" id="profileMenu">
+                            <div class="profile-header">
+                                <i class='bx bx-user-circle'></i>
+                                <span id="profileUsername"></span>
+                            </div>
+                            <div class="profile-divider"></div>
+                            <button class="profile-menu-item" id="viewProfileBtn">
+                                <i class='bx bx-user'></i>
+                                View Profile
+                            </button>
+                            <button class="profile-menu-item" id="settingsBtn">
+                                <i class='bx bx-cog'></i>
+                                Settings
+                            </button>
+                            <div class="profile-divider"></div>
+                            <button class="profile-menu-item logout-item" id="logoutBtn">
+                                <i class='bx bx-log-out'></i>
+                                Logout
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="auth-buttons" id="authButtons">
+                    <button class="login-btn" id="loginBtn">
+                        <i class='bx bx-log-in'></i>
+                        Login
+                    </button>
+                    <button class="register-btn" id="registerBtn">
+                        <i class='bx bx-user-plus'></i>
+                        Register
+                    </button>
+                </div>
+                <button class="add-game-btn" id="addGameBtn">
+                    <i class='bx bx-plus'></i>
+                    ADD GAME
+                </button>
+            </div>
+        </header>
+
+        <!-- Modern Navigation Bar -->
+        <nav class="main-navbar">
+            <div class="navbar-container">
+                <div class="nav-section">
+                    <button class="nav-item active" id="activeTab" data-view="active">
+                        <div class="nav-icon">
+                            <i class='bx bx-time-five'></i>
+                        </div>
+                        <div class="nav-content">
+                            <span class="nav-title">Active Countdowns</span>
+                            <span class="nav-badge" id="activeCount">0</span>
+                        </div>
+                        <div class="nav-indicator"></div>
+                    </button>
+                    
+                    <button class="nav-item" id="archiveTab" data-view="archive">
+                        <div class="nav-icon">
+                            <i class='bx bx-archive-in'></i>
+                        </div>
+                        <div class="nav-content">
+                            <span class="nav-title">Archive</span>
+                            <span class="nav-badge" id="archiveCount">0</span>
+                        </div>
+                        <div class="nav-indicator"></div>
+                    </button>
+                </div>
+                
+                <div class="nav-actions">
+                    <button class="nav-action-btn" id="refreshBtn" title="Refresh Data">
+                        <i class='bx bx-refresh'></i>
+                    </button>
+                    <button class="nav-action-btn" id="settingsNavBtn" title="Quick Settings">
+                        <i class='bx bx-cog'></i>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Active Games View -->
+            <div class="content-view active" id="activeView">
+                <div class="games-grid" id="gamesGrid">
+                    <div class="no-games" id="noGames">
+                        <div class="no-games-icon"><i class='bx bx-joystick'></i></div>
+                        <h3>No Games Added Yet</h3>
+                        <p>Click "ADD GAME" to start tracking your favorite upcoming releases!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Archive View -->
+            <div class="content-view" id="archiveView">
+                <div class="archive-header">
+                    <h2><i class='bx bx-trophy'></i> Released Games Archive</h2>
+                    <p>Your completed countdowns and released games</p>
+                </div>
+                <div class="games-grid" id="archiveGrid">
+                    <div class="no-games" id="noArchive">
+                        <div class="no-games-icon"><i class='bx bx-archive'></i></div>
+                        <h3>No Archived Games Yet</h3>
+                        <p>Games will automatically move here when their release date passes!</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Game Details Page -->
+        <div class="game-details-page" id="gameDetailsPage">
+            <div class="game-details-header">
+                <button class="back-btn" id="backBtn">
+                    <i class='bx bx-arrow-back'></i>
+                    Back to Games
+                </button>
+            </div>
+
+            <div class="game-details-content">
+                <div class="game-hero">
+                    <img class="game-hero-image" id="gameHeroImage" alt="Game Image">
+                    <div class="game-hero-overlay">
+                        <h1 class="game-hero-title" id="gameHeroTitle">Game Title</h1>
+                        <p class="game-hero-description" id="gameHeroDescription">Game Description</p>
+                        <div class="game-hero-info">
+                            <div class="release-info">
+                                <i class='bx bx-calendar'></i>
+                                <span id="gameReleaseInfo">Release Date</span>
+                            </div>
+                            <div class="timezone-info">
+                                <i class='bx bx-world'></i>
+                                <span id="gameTimezoneInfo">Timezone</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="game-countdown-section">
+                    <h2>Time Until Release</h2>
+                    <div class="game-countdown-display">
+                        <div class="game-countdown-item">
+                            <div class="game-countdown-number" id="gameDetailsDays">00</div>
+                            <div class="game-countdown-label">DAYS</div>
+                        </div>
+                        <div class="game-countdown-separator">:</div>
+                        <div class="game-countdown-item">
+                            <div class="game-countdown-number" id="gameDetailsHours">00</div>
+                            <div class="game-countdown-label">HOURS</div>
+                        </div>
+                        <div class="game-countdown-separator">:</div>
+                        <div class="game-countdown-item">
+                            <div class="game-countdown-number" id="gameDetailsMinutes">00</div>
+                            <div class="game-countdown-label">MINUTES</div>
+                        </div>
+                        <div class="game-countdown-separator">:</div>
+                        <div class="game-countdown-item">
+                            <div class="game-countdown-number" id="gameDetailsSeconds">00</div>
+                            <div class="game-countdown-label">SECONDS</div>
+                        </div>
+                    </div>
+
+                    <div class="game-status" id="gameDetailsStatus">
+                        COUNTDOWN ACTIVE
+                    </div>
+                    
+                    <div class="game-links" id="gameLinks">
+                        <!-- Official links will be populated here -->
+                    </div>
+                    
+                </div>
+
+                <!-- Chat Section -->
+                <div class="chat-section">
+                    <div class="chat-header">
+                        <h3>Game Chat</h3>
+                        <button class="fullscreen-chat-btn" id="fullscreenChatBtn">
+                            <i class='bx bx-fullscreen'></i>
+                            Fullscreen Chat
+                        </button>
+                    </div>
+                    <div class="chat-container">
+                        <div class="chat-main-area">
+                            <div class="chat-messages" id="chatMessages">
+                                <!-- Chat messages will be loaded here -->
+                            </div>
+                            <div class="chat-input-section" id="chatInputSection" style="display: none;">
+                                <div class="chat-input-container">
+                                    <input type="text" id="chatInput" placeholder="Type your message..." maxlength="500">
+                                    <button class="send-btn" id="sendMessageBtn">
+                                        <i class='bx bx-send'></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="login-prompt" id="chatLoginPrompt">
+                                <p>Please login to join the chat</p>
+                            </div>
+                        </div>
+                        <div class="chat-users-sidebar">
+                            <h4>
+                                <i class='bx bx-group'></i>
+                                Online (<span id="onlineCount">0</span>)
+                            </h4>
+                            <div class="online-users-list" id="onlineUsersListDetails">
+                                <!-- Online users will be shown here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Page -->
+        <div class="chat-page" id="chatPage">
+            <div class="chat-page-header">
+                <button class="back-btn" id="chatBackBtn">
+                    <i class='bx bx-arrow-back'></i>
+                    Back to Game
+                </button>
+                <div class="chat-page-title">
+                    <h2 id="chatPageGameTitle">Game Chat</h2>
+                    <p id="chatPageGameSubtitle">Join the conversation</p>
+                </div>
+            </div>
+            
+            <div class="chat-page-content">
+                <div class="chat-main">
+                    <div class="chat-messages-container" id="chatPageMessages">
+                        <!-- Chat messages will be loaded here -->
+                    </div>
+                    <div class="chat-input-area" id="chatPageInputSection" style="display: none;">
+                        <div class="chat-input-wrapper">
+                            <input type="text" id="chatPageInput" placeholder="Type your message..." maxlength="500">
+                            <button class="send-btn" id="chatPageSendBtn">
+                                <i class='bx bx-send'></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="chat-login-prompt" id="chatPageLoginPrompt">
+                        <div class="login-prompt-content">
+                            <i class='bx bx-message-dots'></i>
+                            <h3>Join the Chat</h3>
+                            <p>Please login to participate in the conversation</p>
+                            <div class="login-prompt-buttons">
+                                <button class="btn-primary" id="chatLoginBtn">Login</button>
+                                <button class="btn-secondary" id="chatRegisterBtn">Register</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="chat-sidebar">
+                    <div class="online-users">
+                        <h4>
+                            <i class='bx bx-group'></i>
+                            Online Users
+                        </h4>
+                        <div class="users-list" id="onlineUsersList">
+                            <!-- Online users will be shown here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Page -->
+        <div class="profile-page" id="profilePage">
+            <div class="profile-page-header">
+                <button class="back-btn" id="profileBackBtn">
+                    <i class='bx bx-arrow-back'></i>
+                    Back
+                </button>
+                <div class="profile-page-title">
+                    <h2>User Profile</h2>
+                    <p>Manage your account information</p>
+                </div>
+            </div>
+            
+            <div class="profile-page-content">
+                <div class="profile-card">
+                    <div class="profile-avatar">
+                        <i class='bx bx-user-circle'></i>
+                    </div>
+                    <div class="profile-info">
+                        <h3 id="profileDisplayName">Username</h3>
+                        <p id="profileEmail">user@starlite.local</p>
+                        <div class="profile-stats">
+                            <div class="stat-item">
+                                <span class="stat-number" id="profileMessageCount">0</span>
+                                <span class="stat-label">Messages Sent</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number" id="profileJoinDate">Today</span>
+                                <span class="stat-label">Member Since</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="profile-sections">
+                    <div class="profile-section">
+                        <h4>Account Information</h4>
+                        <div class="profile-form">
+                            <div class="form-group">
+                                <label for="profileUsernameEdit">Username</label>
+                                <input type="text" id="profileUsernameEdit" readonly>
+                                <small>Username cannot be changed</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="profileEmailEdit">Email</label>
+                                <input type="email" id="profileEmailEdit" readonly>
+                                <small>Email is auto-generated</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-section">
+                        <h4>Change Password</h4>
+                        <div class="profile-form">
+                            <div class="form-group">
+                                <label for="currentPassword">Current Password</label>
+                                <div class="password-input">
+                                    <input type="password" id="currentPassword" placeholder="Enter current password">
+                                    <button type="button" class="password-toggle" onclick="togglePassword('currentPassword')">
+                                        <i class='bx bx-hide' id="currentPasswordIcon"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="newPassword">New Password</label>
+                                <div class="password-input">
+                                    <input type="password" id="newPassword" placeholder="Enter new password">
+                                    <button type="button" class="password-toggle" onclick="togglePassword('newPassword')">
+                                        <i class='bx bx-hide' id="newPasswordIcon"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="confirmNewPassword">Confirm New Password</label>
+                                <div class="password-input">
+                                    <input type="password" id="confirmNewPassword" placeholder="Confirm new password">
+                                    <button type="button" class="password-toggle" onclick="togglePassword('confirmNewPassword')">
+                                        <i class='bx bx-hide' id="confirmNewPasswordIcon"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <button class="btn-primary" id="changePasswordBtn">Change Password</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Page -->
+        <div class="settings-page" id="settingsPage">
+            <div class="settings-page-header">
+                <button class="back-btn" id="settingsBackBtn">
+                    <i class='bx bx-arrow-back'></i>
+                    Back
+                </button>
+                <div class="settings-page-title">
+                    <h2>Settings</h2>
+                    <p>Customize your experience</p>
+                </div>
+            </div>
+            
+            <div class="settings-page-content">
+                <div class="settings-sections">
+                    <div class="settings-section">
+                        <h4>
+                            <i class='bx bx-palette'></i>
+                            Appearance
+                        </h4>
+                        <div class="settings-form">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <label>Theme</label>
+                                    <small>Choose your preferred color theme</small>
+                                </div>
+                                <select id="themeSelect">
+                                    <option value="blue">Blue (Default)</option>
+                                    <option value="purple">Purple</option>
+                                    <option value="green">Green</option>
+                                    <option value="red">Red</option>
+                                </select>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <label>Compact Mode</label>
+                                    <small>Show more content in less space</small>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="compactMode">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <h4>
+                            <i class='bx bx-bell'></i>
+                            Notifications
+                        </h4>
+                        <div class="settings-form">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <label>Chat Notifications</label>
+                                    <small>Get notified when someone messages in chat</small>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="chatNotifications" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <label>Release Notifications</label>
+                                    <small>Get notified when games are about to release</small>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="releaseNotifications" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <h4>
+                            <i class='bx bx-cog'></i>
+                            General
+                        </h4>
+                        <div class="settings-form">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <label>Show Online Users</label>
+                                    <small>Display who's currently viewing each game</small>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="showOnlineUsers" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section danger-section">
+                        <h4>
+                            <i class='bx bx-error-circle'></i>
+                            Danger Zone
+                        </h4>
+                        <div class="settings-form">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <label>Clear Chat History</label>
+                                    <small>Remove all your chat messages (cannot be undone)</small>
+                                </div>
+                                <button class="btn-danger" id="clearChatBtn">Clear Messages</button>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <label>Delete Account</label>
+                                    <small>Permanently delete your account and all data</small>
+                                </div>
+                                <button class="btn-danger" id="deleteAccountBtn">Delete Account</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Game Modal -->
+        <div class="modal-overlay" id="modalOverlay">
+            <div class="modal">
+                <div class="modal-header">
+                    <h2>Add New Game</h2>
+                    <button class="close-btn" id="closeModal">&times;</button>
+                </div>
+                <form class="game-form" id="gameForm">
+                    <div class="form-group">
+                        <label for="gameName">Game Name *</label>
+                        <input type="text" id="gameName" name="gameName" required placeholder="Enter game name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="gameDescription">Description</label>
+                        <textarea id="gameDescription" placeholder="Brief description of the game..." rows="3" maxlength="500"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Official Links</label>
+                        <div class="links-container">
+                            <div class="link-input-group">
+                                <select id="linkType1">
+                                    <option value="">Select Platform</option>
+                                    <option value="steam">Steam</option>
+                                    <option value="epic">Epic Games Store</option>
+                                    <option value="gog">GOG</option>
+                                    <option value="battlenet">Battle.net</option>
+                                    <option value="ubisoft">Ubisoft Connect</option>
+                                    <option value="origin">EA Origin</option>
+                                    <option value="gamepass">Xbox Game Pass</option>
+                                    <option value="xbox">Xbox Store</option>
+                                    <option value="playstation">PlayStation Store</option>
+                                    <option value="nintendo">Nintendo eShop</option>
+                                    <option value="itch">itch.io</option>
+                                    <option value="humble">Humble Bundle</option>
+                                    <option value="rockstar">Rockstar Games</option>
+                                    <option value="bethesda">Bethesda Launcher</option>
+                                    <option value="official">Official Website</option>
+                                    <option value="trailer">Trailer</option>
+                                    <option value="twitch">Twitch</option>
+                                    <option value="youtube">YouTube</option>
+                                </select>
+                                <input type="url" id="linkUrl1" placeholder="https://..." maxlength="500">
+                            </div>
+                            <div class="link-input-group">
+                                <select id="linkType2">
+                                    <option value="">Select Platform</option>
+                                    <option value="steam">Steam</option>
+                                    <option value="epic">Epic Games Store</option>
+                                    <option value="gog">GOG</option>
+                                    <option value="battlenet">Battle.net</option>
+                                    <option value="ubisoft">Ubisoft Connect</option>
+                                    <option value="origin">EA Origin</option>
+                                    <option value="gamepass">Xbox Game Pass</option>
+                                    <option value="xbox">Xbox Store</option>
+                                    <option value="playstation">PlayStation Store</option>
+                                    <option value="nintendo">Nintendo eShop</option>
+                                    <option value="itch">itch.io</option>
+                                    <option value="humble">Humble Bundle</option>
+                                    <option value="rockstar">Rockstar Games</option>
+                                    <option value="bethesda">Bethesda Launcher</option>
+                                    <option value="official">Official Website</option>
+                                    <option value="trailer">Trailer</option>
+                                    <option value="twitch">Twitch</option>
+                                    <option value="youtube">YouTube</option>
+                                </select>
+                                <input type="url" id="linkUrl2" placeholder="https://..." maxlength="500">
+                            </div>
+                            <div class="link-input-group">
+                                <select id="linkType3">
+                                    <option value="">Select Platform</option>
+                                    <option value="steam">Steam</option>
+                                    <option value="epic">Epic Games Store</option>
+                                    <option value="gog">GOG</option>
+                                    <option value="battlenet">Battle.net</option>
+                                    <option value="ubisoft">Ubisoft Connect</option>
+                                    <option value="origin">EA Origin</option>
+                                    <option value="gamepass">Xbox Game Pass</option>
+                                    <option value="xbox">Xbox Store</option>
+                                    <option value="playstation">PlayStation Store</option>
+                                    <option value="nintendo">Nintendo eShop</option>
+                                    <option value="itch">itch.io</option>
+                                    <option value="humble">Humble Bundle</option>
+                                    <option value="rockstar">Rockstar Games</option>
+                                    <option value="bethesda">Bethesda Launcher</option>
+                                    <option value="official">Official Website</option>
+                                    <option value="trailer">Trailer</option>
+                                    <option value="twitch">Twitch</option>
+                                    <option value="youtube">YouTube</option>
+                                </select>
+                                <input type="url" id="linkUrl3" placeholder="https://..." maxlength="500">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="releaseDate">Release Date *</label>
+                            <input type="date" id="releaseDate" name="releaseDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="releaseTime">Release Time</label>
+                            <input type="time" id="releaseTime" name="releaseTime" value="00:00">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="timezone">Timezone *</label>
+                        <select id="timezone" name="timezone" required>
+                            <option value="UTC">🌍 UTC (Coordinated Universal Time)</option>
+
+                            <!-- North America -->
+                            <optgroup label="🌎 North America">
+                                <option value="America/New_York">🇺🇸 Eastern Time (New York)</option>
+                                <option value="America/Chicago">🇺🇸 Central Time (Chicago)</option>
+                                <option value="America/Denver">🇺🇸 Mountain Time (Denver)</option>
+                                <option value="America/Los_Angeles">🇺🇸 Pacific Time (Los Angeles)</option>
+                                <option value="America/Anchorage">🇺🇸 Alaska Time (Anchorage)</option>
+                                <option value="Pacific/Honolulu">🇺🇸 Hawaii Time (Honolulu)</option>
+                                <option value="America/Toronto">🇨🇦 Eastern Time (Toronto)</option>
+                                <option value="America/Vancouver">🇨🇦 Pacific Time (Vancouver)</option>
+                                <option value="America/Mexico_City">🇲🇽 Central Time (Mexico City)</option>
+                            </optgroup>
+
+                            <!-- South America -->
+                            <optgroup label="🌎 South America">
+                                <option value="America/Sao_Paulo">🇧🇷 Brasília Time (São Paulo)</option>
+                                <option value="America/Argentina/Buenos_Aires">🇦🇷 Argentina Time (Buenos Aires)</option>
+                                <option value="America/Santiago">🇨🇱 Chile Time (Santiago)</option>
+                                <option value="America/Lima">🇵🇪 Peru Time (Lima)</option>
+                                <option value="America/Bogota">🇨🇴 Colombia Time (Bogotá)</option>
+                            </optgroup>
+
+                            <!-- Europe -->
+                            <optgroup label="🌍 Europe">
+                                <option value="Europe/London">🇬🇧 Greenwich Mean Time (London)</option>
+                                <option value="Europe/Paris">🇫🇷 Central European Time (Paris)</option>
+                                <option value="Europe/Berlin">🇩🇪 Central European Time (Berlin)</option>
+                                <option value="Europe/Rome">🇮🇹 Central European Time (Rome)</option>
+                                <option value="Europe/Madrid">🇪🇸 Central European Time (Madrid)</option>
+                                <option value="Europe/Amsterdam">🇳🇱 Central European Time (Amsterdam)</option>
+                                <option value="Europe/Brussels">🇧🇪 Central European Time (Brussels)</option>
+                                <option value="Europe/Vienna">🇦🇹 Central European Time (Vienna)</option>
+                                <option value="Europe/Zurich">🇨🇭 Central European Time (Zurich)</option>
+                                <option value="Europe/Stockholm">🇸🇪 Central European Time (Stockholm)</option>
+                                <option value="Europe/Oslo">🇳🇴 Central European Time (Oslo)</option>
+                                <option value="Europe/Copenhagen">🇩🇰 Central European Time (Copenhagen)</option>
+                                <option value="Europe/Helsinki">🇫🇮 Eastern European Time (Helsinki)</option>
+                                <option value="Europe/Warsaw">🇵🇱 Central European Time (Warsaw)</option>
+                                <option value="Europe/Prague">🇨🇿 Central European Time (Prague)</option>
+                                <option value="Europe/Budapest">🇭🇺 Central European Time (Budapest)</option>
+                                <option value="Europe/Bucharest">🇷🇴 Eastern European Time (Bucharest)</option>
+                                <option value="Europe/Athens">🇬🇷 Eastern European Time (Athens)</option>
+                                <option value="Europe/Istanbul">🇹🇷 Turkey Time (Istanbul)</option>
+                                <option value="Europe/Moscow">🇷🇺 Moscow Time (Moscow)</option>
+                                <option value="Europe/Kiev">🇺🇦 Eastern European Time (Kiev)</option>
+                            </optgroup>
+
+                            <!-- Africa -->
+                            <optgroup label="🌍 Africa">
+                                <option value="Africa/Cairo">🇪🇬 Eastern European Time (Cairo)</option>
+                                <option value="Africa/Lagos">🇳🇬 West Africa Time (Lagos)</option>
+                                <option value="Africa/Johannesburg">🇿🇦 South Africa Time (Johannesburg)</option>
+                                <option value="Africa/Nairobi">🇰🇪 East Africa Time (Nairobi)</option>
+                                <option value="Africa/Casablanca">🇲🇦 Western European Time (Casablanca)</option>
+                            </optgroup>
+
+                            <!-- Asia -->
+                            <optgroup label="🌏 Asia">
+                                <option value="Asia/Tokyo">🇯🇵 Japan Standard Time (Tokyo)</option>
+                                <option value="Asia/Seoul">🇰🇷 Korea Standard Time (Seoul)</option>
+                                <option value="Asia/Shanghai">🇨🇳 China Standard Time (Shanghai)</option>
+                                <option value="Asia/Beijing">🇨🇳 China Standard Time (Beijing)</option>
+                                <option value="Asia/Hong_Kong">🇭🇰 Hong Kong Time (Hong Kong)</option>
+                                <option value="Asia/Singapore">🇸🇬 Singapore Time (Singapore)</option>
+                                <option value="Asia/Bangkok">🇹🇭 Indochina Time (Bangkok)</option>
+                                <option value="Asia/Jakarta">🇮🇩 Western Indonesia Time (Jakarta)</option>
+                                <option value="Asia/Manila">🇵🇭 Philippine Time (Manila)</option>
+                                <option value="Asia/Kuala_Lumpur">🇲🇾 Malaysia Time (Kuala Lumpur)</option>
+                                <option value="Asia/Ho_Chi_Minh">🇻🇳 Indochina Time (Ho Chi Minh)</option>
+                                <option value="Asia/Kolkata">🇮🇳 India Standard Time (Kolkata)</option>
+                                <option value="Asia/Mumbai">🇮🇳 India Standard Time (Mumbai)</option>
+                                <option value="Asia/Dubai">🇦🇪 Gulf Standard Time (Dubai)</option>
+                                <option value="Asia/Riyadh">🇸🇦 Arabia Standard Time (Riyadh)</option>
+                                <option value="Asia/Tehran">🇮🇷 Iran Standard Time (Tehran)</option>
+                                <option value="Asia/Jerusalem">🇮🇱 Israel Standard Time (Jerusalem)</option>
+                                <option value="Asia/Yekaterinburg">🇷🇺 Yekaterinburg Time (Yekaterinburg)</option>
+                                <option value="Asia/Novosibirsk">🇷🇺 Novosibirsk Time (Novosibirsk)</option>
+                                <option value="Asia/Vladivostok">🇷🇺 Vladivostok Time (Vladivostok)</option>
+                            </optgroup>
+
+                            <!-- Oceania -->
+                            <optgroup label="🌏 Oceania">
+                                <option value="Australia/Sydney">🇦🇺 Australian Eastern Time (Sydney)</option>
+                                <option value="Australia/Melbourne">🇦🇺 Australian Eastern Time (Melbourne)</option>
+                                <option value="Australia/Brisbane">🇦🇺 Australian Eastern Time (Brisbane)</option>
+                                <option value="Australia/Perth">🇦🇺 Australian Western Time (Perth)</option>
+                                <option value="Australia/Adelaide">🇦🇺 Australian Central Time (Adelaide)</option>
+                                <option value="Australia/Darwin">🇦🇺 Australian Central Time (Darwin)</option>
+                                <option value="Pacific/Auckland">🇳🇿 New Zealand Time (Auckland)</option>
+                                <option value="Pacific/Fiji">🇫🇯 Fiji Time (Fiji)</option>
+                                <option value="Pacific/Tahiti">🇵🇫 Tahiti Time (Tahiti)</option>
+                            </optgroup>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Game Image</label>
+                        <div class="image-options">
+                            <div class="image-tabs">
+                                <button type="button" class="image-tab active" id="urlTab">
+                                    <i class='bx bx-link'></i> URL
+                                </button>
+                                <button type="button" class="image-tab" id="uploadTab">
+                                    <i class='bx bx-upload'></i> Upload
+                                </button>
+                            </div>
+
+                            <div class="image-input-section">
+                                <!-- URL Input -->
+                                <div class="image-input active" id="urlInput">
+                                    <input type="url" id="imageUrl" name="imageUrl" placeholder="https://example.com/image.jpg">
+                                    <button type="button" class="preview-url-btn" id="previewUrlBtn">
+                                        <i class='bx bx-show'></i> Preview
+                                    </button>
+                                </div>
+
+                                <!-- File Upload -->
+                                <div class="image-input" id="uploadInput">
+                                    <button type="button" class="image-btn" id="selectImageBtn">
+                                        <i class='bx bx-image-add'></i>
+                                        Select Image
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="image-preview" id="imagePreview">
+                                <img id="previewImg" alt="Game preview">
+                                <button type="button" class="remove-image" id="removeImage">&times;</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" id="cancelBtn">Cancel</button>
+                        <button type="submit" class="btn-primary">Add Game</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Login</h2>
+                <button class="close-btn" id="closeLoginModal">&times;</button>
+            </div>
+            <form class="auth-form" id="loginForm">
+                <div class="form-group">
+                    <label for="loginUsername">Username *</label>
+                    <input type="text" id="loginUsername" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password *</label>
+                    <div class="password-input">
+                        <input type="password" id="loginPassword" name="password" required>
+                        <button type="button" class="password-toggle" onclick="togglePassword('loginPassword')">
+                            <i class='bx bx-hide' id="loginPasswordIcon"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" id="cancelLoginBtn">Cancel</button>
+                    <button type="submit" class="btn-primary">Login</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div class="modal-overlay" id="registerModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Register</h2>
+                <button class="close-btn" id="closeRegisterModal">&times;</button>
+            </div>
+            <form class="auth-form" id="registerForm">
+                <div class="form-group">
+                    <label for="registerUsername">Username *</label>
+                    <input type="text" id="registerUsername" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Password *</label>
+                    <div class="password-input">
+                        <input type="password" id="registerPassword" name="password" required>
+                        <button type="button" class="password-toggle" onclick="togglePassword('registerPassword')">
+                            <i class='bx bx-hide' id="registerPasswordIcon"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password *</label>
+                    <div class="password-input">
+                        <input type="password" id="confirmPassword" name="confirmPassword" required>
+                        <button type="button" class="password-toggle" onclick="togglePassword('confirmPassword')">
+                            <i class='bx bx-hide' id="confirmPasswordIcon"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" id="cancelRegisterBtn">Cancel</button>
+                    <button type="submit" class="btn-primary">Register</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="renderer.js"></script>
+</body>
+</html>
